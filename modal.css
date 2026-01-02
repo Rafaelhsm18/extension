@@ -1,0 +1,344 @@
+/* AI Proposal Pro - Modal para mostrar propuestas generadas */
+
+/* Overlay backdrop */
+.ai-proposal-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal container */
+.ai-proposal-modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+
+    display: flex;
+    flex-direction: column;
+
+    transform: scale(0.9) translateY(20px);
+    animation: modalIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes modalIn {
+    to {
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Header */
+.ai-proposal-modal-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ai-proposal-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.ai-proposal-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ai-proposal-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Body */
+.ai-proposal-modal-body {
+    padding: 28px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ai-proposal-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ai-proposal-modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.ai-proposal-modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.ai-proposal-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Loading state */
+.ai-proposal-loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.ai-proposal-spinner {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ai-proposal-loading-text {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Error state */
+.ai-proposal-error {
+    padding: 20px;
+    background: linear-gradient(to right, #fef2f2 0%, white 100%);
+    border-left: 4px solid #ef4444;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.ai-proposal-error-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #991b1b;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-proposal-error-message {
+    font-size: 14px;
+    color: #7f1d1d;
+    line-height: 1.5;
+}
+
+/* Success state */
+.ai-proposal-content {
+    display: none;
+}
+
+.ai-proposal-content.visible {
+    display: block;
+}
+
+.ai-proposal-job-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.ai-proposal-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.ai-proposal-text {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #334155;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.ai-proposal-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: linear-gradient(to right, #f0f9ff 0%, white 100%);
+    border-radius: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.ai-proposal-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ai-proposal-stat strong {
+    color: #334155;
+    font-weight: 600;
+}
+
+/* Footer */
+.ai-proposal-modal-footer {
+    padding: 20px 28px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.ai-proposal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.ai-proposal-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ai-proposal-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.ai-proposal-btn-primary:active {
+    transform: translateY(0);
+}
+
+.ai-proposal-btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.ai-proposal-btn-secondary:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.ai-proposal-btn-secondary:active {
+    transform: translateY(0);
+}
+
+.ai-proposal-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Success message cuando se copia */
+.ai-proposal-copied {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+    z-index: 10000000;
+
+    opacity: 0;
+    animation: popIn 0.5s ease forwards;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ai-proposal-modal {
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .ai-proposal-modal-header,
+    .ai-proposal-modal-body,
+    .ai-proposal-modal-footer {
+        padding: 20px;
+    }
+
+    .ai-proposal-modal-footer {
+        flex-direction: column;
+    }
+
+    .ai-proposal-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Proposal Pro</title>
+    <script src="ExtPay.js"></script>
+    <link rel="stylesheet" href="popup_styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                </svg>
+                <h1>AI Proposal Pro</h1>
+            </div>
+        </header>
+
+        <main>
+            <div class="config-section">
+                <h2>🎯 Your Professional Profile</h2>
+                <p class="description">
+                    Describe your experience, skills, and specialization. This information will be used to generate
+                    personalized proposals with AI.
+                </p>
+
+                <label for="professionalProfile">Complete Profile</label>
+                <textarea id="professionalProfile" rows="14" placeholder="Example:
+
+I'm a Full Stack Developer with 5 years of experience specializing in React, Node.js, and MongoDB.
+
+Experience:
+- E-commerce with Shopify and WooCommerce
+- SaaS applications with scalable architectures
+- API integrations and payment systems
+
+Main skills: JavaScript, TypeScript, React, Next.js, Node.js, Express, MongoDB, PostgreSQL, AWS, Docker
+
+I have worked with clients worldwide delivering high-quality projects on time."></textarea>
+
+                <button id="saveProfileBtn" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Save Profile
+                </button>
+
+                <div id="saveStatus" class="save-status hidden"></div>
+            </div>
+
+            <div class="info-section">
+                <h3>💡 How to Use</h3>
+                <ol>
+                    <li>Complete your professional profile above (minimum 50 characters)</li>
+                    <li>Click "Save Profile"</li>
+                    <li>Go to any job on Upwork.com and <strong>open it in a new tab or window</strong></li>
+                    <li>Click the "Generate AI Proposal" button</li>
+                    <li>Wait 5-10 seconds and copy your personalized proposal!</li>
+                </ol>
+
+                <div class="info-box">
+                    <strong>✨ Included in your Premium subscription (€9.99/month):</strong>
+                    <ul>
+                        <li>✅ Unlimited AI proposals</li>
+                        <li>✅ Personalization based on your profile</li>
+                        <li>✅ Automatic responses in Spanish or English</li>
+                        <li>✅ Generation in 5-10 seconds</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>🚀 Premium Subscription: €9.99/month · Unlimited Proposals</p>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

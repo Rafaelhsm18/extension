@@ -1,0 +1,23 @@
+# Extension files
+*.zip
+*.crx
+*.pem
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Workspace
+.vscode/
+.idea/
+.gemini/
+antigravity/
+
+# Development
+node_modules/
+.env

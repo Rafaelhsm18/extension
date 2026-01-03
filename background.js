@@ -4,11 +4,8 @@
 // Importar ExtensionPay (Manifest V3 compatible)
 importScripts('ExtPay.js');
 
-const OPENAI_API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+const BACKEND_URL = 'https://ai-proposal-backend-api.vercel.app/api/generate-proposal';
 const MODEL = 'gpt-4o-mini';
-
-// ⚠️ PEGA TU API KEY DE OPENAI AQUÍ (replace 'YOUR_OPENAI_API_KEY_HERE')
-const OPENAI_API_KEY = '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';
 
 // Inicializar ExtensionPay con el Extension ID REAL
 const extpay = ExtPay('ai-proposal-pro-2026');
@@ -142,18 +139,10 @@ async function checkPaymentAndGenerate(jobData) {
     }
 }
 
-// Función principal para generar propuesta
 async function handleGenerateProposal(jobData) {
     // Obtener solo el perfil profesional del usuario desde chrome.storage.SYNC
-    // La API key es centralizada (línea 10) y pagada por el propietario de la extensión
     const data = await chrome.storage.sync.get(['professionalProfile']);
-
     const professionalProfile = data.professionalProfile;
-
-    // Verificar que la API key centralizada esté configurada
-    if (!OPENAI_API_KEY || OPENAI_API_KEY === 'YOUR_OPENAI_API_KEY_HERE') {
-        throw new Error('Configuration error: OpenAI API key is not configured. Contact support.');
-    }
 
     // Verify that the user has completed their profile
     if (!professionalProfile || professionalProfile.length < 50) {
@@ -167,15 +156,15 @@ async function handleGenerateProposal(jobData) {
     // Construir el prompt con el perfil completo
     const prompt = buildPrompt(jobData, professionalProfile);
 
-    // Llamar a la API de OpenAI usando la API key centralizada
-    const proposal = await callOpenAI(OPENAI_API_KEY, prompt);
+    // Llamar al backend de Vercel (la API key está en el servidor)
+    const proposal = await callOpenAI(MODEL, prompt);
 
     return proposal;
 }
 
 // Construir el prompt para OpenAI usando el perfil profesional completo
 function buildPrompt(jobData, professionalProfile) {
-    return `You are an expert in writing persuasive proposals for freelancers on Upwork.
+    return `You are an expert in writing human-centric, high-conversion Upwork proposals. Your goal is to sound like a real person, not an AI or a generic bot.
 
 FREELANCER PROFILE:
 ${professionalProfile}
@@ -186,71 +175,57 @@ Description: ${jobData.description}
 ${jobData.skills ? `Required Skills: ${jobData.skills}` : ''}
 
 INSTRUCTIONS (MAX 200 WORDS):
-1. START with a personalized greeting and a hook that shows you've analyzed THEIR specific project.
-2. HONESTY RULE: Only mention technical skills explicitly found in the FREELANCER PROFILE. 
-3. STRATEGIC PIVOT: If there is a technical gap (e.g., job asks for C# but profile is Service Lead), do NOT say "I will learn". Instead, position the freelancer as a high-level partner who ensures PROJECT SUCCESS through process optimization, team coordination, and strategic oversight.
-4. VALUE PROP: Highlight how 5+ years of Service Leadership ensures that milestones are met, communication is fluid, and the technical debt is managed through better processes.
-5. BE DIRECT: Use a professional, confident, and "peer-to-peer" tone. No "begging" for the job.
-6. CALL TO ACTION: End with a specific invitation to discuss how this leadership approach will benefit their project.
-7. NO GENERIC FILLER: Avoid phrases like "I am the perfect candidate" or "I have read your description."
+1. **NO MARKDOWN OVERUSE**: Do not use bold (**) for every section. Use plain text or very subtle formatting. It must look like a professional email, not a marketing flyer.
+2. **THE HOOK**: Start by acknowledging the specific problem. (e.g., "I understand the importance of consistency when labeling large datasets...").
+3. **REALISTIC CONNECTION**: Use your background in Service Lead/KPIs to explain WHY you are reliable for this task. (e.g., "My experience managing service delivery means I understand that data accuracy is non-negotiable").
+4. **INTEGRITY CHECK**: If the job asks for a language or technical skill NOT in the profile, focus on your "operational reliability" and "attention to detail" without lying.
+5. **TONE**: Peer-to-peer. Confident but helpful. Avoid being "too corporate" for simple tasks.
+6. **DIRECT CALL TO ACTION**: End with a simple, low-friction question or a statement of availability. No "I look forward to your call".
 
-CRITICAL LANGUAGE RULE: Write the proposal in the SAME LANGUAGE as the job description.
-
-CRITICAL: The proposal must be 100% SPECIFIC to this job. If the job mentions "GitHub" or "Zoom calls", the proposal must address those contexts.
+CRITICAL LANGUAGE RULE: Write the proposal in the EXACT SAME LANGUAGE as the job description.
 
 ### FINAL INTEGRITY CHECK: 
-If the proposal claims a technical skill or years of experience NOT in the Freelancer Profile, it is a FAILURE. Ensure the freelancer's identity as a Service Lead is the core strength of the message.`;
+Do not invent skills. Do not use corporate jargon like "strategic synergy". Focus on being the person who will get the job done right and on time.`;
 }
 
-// Llamar a la API de OpenAI
-async function callOpenAI(apiKey, prompt) {
+// Llamar al backend en Vercel
+async function callOpenAI(unusedKey, prompt) {
     try {
-        const response = await fetch(OPENAI_API_ENDPOINT, {
+        const response = await fetch(BACKEND_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 model: MODEL,
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'You are an expert in writing freelancer proposals. You write in a professional, persuasive, and personalized manner.'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                temperature: 0.7,
-                max_tokens: 500,
-                top_p: 1,
-                frequency_penalty: 0.3,
-                presence_penalty: 0.3
+                prompt: prompt
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error?.message || `Error ${response.status}: ${response.statusText}`);
-        }
-
         const data = await response.json();
 
-        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-            throw new Error('Invalid API response');
+        // 1. Verificar si el backend o OpenAI devolvieron un error
+        if (!response.ok || data.error) {
+            console.error('Detalle del error:', data);
+            const msg = data.error?.message || data.error || `Error ${response.status}`;
+            throw new Error(`Error API: ${msg}`);
         }
 
-        const proposal = data.choices[0].message.content.trim();
+        // 2. Validar la estructura de la respuesta (OpenAI format)
+        if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            const proposal = data.choices[0].message.content.trim();
 
-        // Guardar en historial
-        saveToHistory(proposal, data);
+            // Guardar en historial
+            saveToHistory(proposal, data);
 
-        return proposal;
+            return proposal;
+        } else {
+            console.error('Estructura inesperada:', data);
+            throw new Error('La respuesta del servidor no contiene una propuesta válida. Revisa la configuración de tu API Key en Vercel.');
+        }
 
     } catch (error) {
-        console.error('OpenAI API Error:', error);
+        console.error('Error llamando al backend:', error);
         throw error;
     }
 }

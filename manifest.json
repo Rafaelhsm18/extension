@@ -9,7 +9,7 @@
     ],
     "host_permissions": [
         "https://www.upwork.com/*",
-        "https://api.openai.com/*",
+        "https://ai-proposal-backend-api.vercel.app/*",
         "https://extensionpay.com/*"
     ],
     "background": {

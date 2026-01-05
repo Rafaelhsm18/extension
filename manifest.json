@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "AI Proposal Pro",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "description": "Generate professional Upwork proposals using AI in seconds.",
     "permissions": [
         "storage",
@@ -59,7 +59,8 @@
         {
             "resources": [
                 "icons/*.png",
-                "ExtPay.js"
+                "ExtPay.js",
+                "extpay.html"
             ],
             "matches": [
                 "https://extensionpay.com/*",
